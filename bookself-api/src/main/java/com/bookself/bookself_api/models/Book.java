@@ -1,12 +1,15 @@
 package com.bookself.bookself_api.models;
 
-import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import jakarta.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
+import java.util.Set;
 
 @Entity
-@Table(name="book")
+@Table(name = "books")
 public class Book {
 
     @Id
@@ -14,65 +17,51 @@ public class Book {
     private Long id;
 
     @Column(nullable = false)
-    private String isbn;
-
-    @Column(nullable = false)
     private String title;
 
     @Column(nullable = false)
     private String author;
 
-    @ManyToOne
-    @JoinColumn(name = "genre_id", nullable = false)
-    private Genre genre;
-
-    @Column(nullable = false)
-    private String coverImagePath;
-
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ReadingStatus status;
+    @Column(nullable = false, unique = true)
+    private String isbn;
 
-    @Column(nullable = false)
-    private Integer rating;
+    @Column
+    private LocalDate publishDate;
 
-    @Column(nullable = false)
-    private String notes;
+    private String coverImagePath;
 
-//    @ManyToMany
-//    @JoinTable(
-//            name = "user_wishlist",
-//            joinColumns = @JoinColumn(name = "book_id"),
-//            inverseJoinColumns = @JoinColumn(name = "user_id")
-//    )
-//    private Set<User> usersWithBookInWishlist;
+    @ManyToMany
+    @JoinTable(
+            name = "book_genres",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id")
+    )
+    private Set<Genre> genres;
 
-    @Column(nullable = false)
+    // A book can have multiple reviews
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Review> reviews;
+
+    // A book can have many reading progresses
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ReadingProgress> readingProgresses;
+
+    @ManyToOne
+    @JoinColumn(name = "added_by_user_id", nullable = false)
+    private User addedBy;
+
+    @Column(nullable = false, updatable = false)
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public Book() {
-    }
-
-    public Book(Long id, String isbn, String title, String author, Genre genre, String coverImagePath, String description, ReadingStatus status, Integer rating, String notes, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
-        this.isbn = isbn;
-        this.title = title;
-        this.author = author;
-        this.genre = genre;
-        this.coverImagePath = coverImagePath;
-        this.description = description;
-        this.status = status;
-        this.rating = rating;
-        this.notes = notes;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
+    // Getters and Setters
 
     public Long getId() {
         return id;
@@ -80,14 +69,6 @@ public class Book {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
     }
 
     public String getTitle() {
@@ -106,12 +87,28 @@ public class Book {
         this.author = author;
     }
 
-    public Genre getGenre() {
-        return genre;
+    public String getDescription() {
+        return description;
     }
 
-    public void setGenre(Genre genre) {
-        this.genre = genre;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public LocalDate getPublishDate() {
+        return publishDate;
+    }
+
+    public void setPublishDate(LocalDate publishDate) {
+        this.publishDate = publishDate;
     }
 
     public String getCoverImagePath() {
@@ -122,36 +119,20 @@ public class Book {
         this.coverImagePath = coverImagePath;
     }
 
-    public String getDescription() {
-        return description;
+    public Set<Genre> getGenres() {
+        return genres;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setGenres(Set<Genre> genres) {
+        this.genres = genres;
     }
 
-    public ReadingStatus getStatus() {
-        return status;
+    public User getAddedBy() {
+        return addedBy;
     }
 
-    public void setStatus(ReadingStatus status) {
-        this.status = status;
-    }
-
-    public Integer getRating() {
-        return rating;
-    }
-
-    public void setRating(Integer rating) {
-        this.rating = rating;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
+    public void setAddedBy(User addedBy) {
+        this.addedBy = addedBy;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -168,17 +149,5 @@ public class Book {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Book book)) return false;
-        return Objects.equals(getId(), book.getId()) && Objects.equals(getIsbn(), book.getIsbn()) && Objects.equals(getTitle(), book.getTitle()) && Objects.equals(getAuthor(), book.getAuthor()) && Objects.equals(getGenre(), book.getGenre()) && Objects.equals(getCoverImagePath(), book.getCoverImagePath()) && Objects.equals(getDescription(), book.getDescription()) && getStatus() == book.getStatus() && Objects.equals(getRating(), book.getRating()) && Objects.equals(getNotes(), book.getNotes()) && Objects.equals(getCreatedAt(), book.getCreatedAt()) && Objects.equals(getUpdatedAt(), book.getUpdatedAt());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getIsbn(), getTitle(), getAuthor(), getGenre(), getCoverImagePath(), getDescription(), getStatus(), getRating(), getNotes(), getCreatedAt(), getUpdatedAt());
     }
 }

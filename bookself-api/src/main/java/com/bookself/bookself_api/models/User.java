@@ -1,16 +1,16 @@
 package com.bookself.bookself_api.models;
 
-import jakarta.persistence.*;
-import org.springframework.data.annotation.Id;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.awt.print.Book;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "users")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,50 +24,47 @@ public class User {
     @Column(nullable = false)
     private String name;
 
-    @Column(length = 500)
+    @Column(columnDefinition = "TEXT")
     private String bio;
 
-    @Lob // To store binary large object data (e.g., images)
-    @Column(name = "profile_photo", columnDefinition = "BLOB")
-    private byte[] profilePhoto;
+    @Column
+    private String profilePhotoUrl;  // Profile photo URL field
 
-    @Enumerated(EnumType.STRING)  // Maps enum to its string value in the database
-    @Column(name = "role")
-    private Set<UserRole> roles = new HashSet<>();
+    // Many-to-Many relationship for books in reading progress
+    @ManyToMany
+    @JoinTable(
+            name = "user_books",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "book_id")
+    )
+    private Set<Book> books;  // Books in reading progress
 
+    // Many-to-Many relationship for books added to the wishlist
     @ManyToMany
     @JoinTable(
             name = "user_wishlist_books",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id")
     )
-    private Set<Book> wishlistBooks = new HashSet<>();
+    private Set<Book> wishlistBooks;  // Books in the wishlist
 
-    @Column(nullable = false, updatable = false)
+    // A user can have multiple reviews
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Review> reviews;
+
+    // A user can have many reading progresses
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ReadingProgress> readingProgresses;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRole role;  // New field for user role
+
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
-
-    private LocalDateTime lastLoginAt;
-
-    // Constructors
-    public User() {
-    }
-
-    public User(String email, String password, String name, String bio,
-                byte[] profilePhoto, Set<UserRole> roles, Set<Book> wishlistBooks, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime lastLoginAt) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.bio = bio;
-        this.profilePhoto = profilePhoto;
-        this.roles = roles;
-        this.wishlistBooks = wishlistBooks;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.lastLoginAt = lastLoginAt;
-    }
 
     // Getters and Setters
 
@@ -111,20 +108,20 @@ public class User {
         this.bio = bio;
     }
 
-    public byte[] getProfilePhoto() {
-        return profilePhoto;
+    public String getProfilePhotoUrl() {
+        return profilePhotoUrl;
     }
 
-    public void setProfilePhoto(byte[] profilePhoto) {
-        this.profilePhoto = profilePhoto;
+    public void setProfilePhotoUrl(String profilePhotoUrl) {
+        this.profilePhotoUrl = profilePhotoUrl;
     }
 
-    public Set<UserRole> getRoles() {
-        return roles;
+    public Set<Book> getBooks() {
+        return books;
     }
 
-    public void setRoles(Set<UserRole> roles) {
-        this.roles = roles;
+    public void setBooks(Set<Book> books) {
+        this.books = books;
     }
 
     public Set<Book> getWishlistBooks() {
@@ -133,6 +130,30 @@ public class User {
 
     public void setWishlistBooks(Set<Book> wishlistBooks) {
         this.wishlistBooks = wishlistBooks;
+    }
+
+    public Set<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(Set<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+    public Set<ReadingProgress> getReadingProgresses() {
+        return readingProgresses;
+    }
+
+    public void setReadingProgresses(Set<ReadingProgress> readingProgresses) {
+        this.readingProgresses = readingProgresses;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -149,34 +170,5 @@ public class User {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public LocalDateTime getLastLoginAt() {
-        return lastLoginAt;
-    }
-
-    public void setLastLoginAt(LocalDateTime lastLoginAt) {
-        this.lastLoginAt = lastLoginAt;
-    }
-
-    // Lifecycle callback methods
-    /*
-    @PrePersist is a JPA (Java Persistence API) annotation that marks a method
-    to be executed before an entity is persisted (i.e., inserted)
-    into the database for the first time.
-     */
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    /*
-    @PreUpdate is a JPA (Java Persistence API) annotation that marks a method
-    to be executed before an entity is updated in the database.
-    */
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
     }
 }
