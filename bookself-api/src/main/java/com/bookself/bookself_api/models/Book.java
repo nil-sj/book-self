@@ -173,7 +173,8 @@ public class Book {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Book book)) return false;
+        if (!(o instanceof Book)) return false;
+        Book book = (Book) o;
         return Objects.equals(getId(), book.getId()) && Objects.equals(getIsbn(), book.getIsbn()) && Objects.equals(getTitle(), book.getTitle()) && Objects.equals(getAuthor(), book.getAuthor()) && Objects.equals(getGenre(), book.getGenre()) && Objects.equals(getCoverImagePath(), book.getCoverImagePath()) && Objects.equals(getDescription(), book.getDescription()) && getStatus() == book.getStatus() && Objects.equals(getRating(), book.getRating()) && Objects.equals(getNotes(), book.getNotes()) && Objects.equals(getCreatedAt(), book.getCreatedAt()) && Objects.equals(getUpdatedAt(), book.getUpdatedAt());
     }
 
