@@ -92,6 +92,10 @@ public class ReadingProgress {
         return progressPercentage;
     }
 
+    public void setProgressPercentage(double progressPercentage) {
+        this.progressPercentage = progressPercentage;
+    }
+
     public LocalDateTime getStartedDate() {
         return startedDate;
     }
