@@ -23,6 +23,26 @@ public class BookDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    // Constructors
+    public BookDto() {
+    }
+
+    public BookDto(Long id, String title, String author, String description, String isbn, LocalDate publishDate, String coverImagePath, Set<Genre> genres, Set<Review> reviews, User addedBy, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.description = description;
+        this.isbn = isbn;
+        this.publishDate = publishDate;
+        this.coverImagePath = coverImagePath;
+        this.genres = genres;
+        this.reviews = reviews;
+        this.addedBy = addedBy;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    // Getters and Setters
     public Long getId() {
         return id;
     }
