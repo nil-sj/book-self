@@ -13,4 +13,7 @@ public interface BookStatisticsRepository extends JpaRepository<BookStatistics, 
 
     // Find book statistics by book
     Optional<BookStatistics> findByBook(Book book);
+
+    // Find book statics by book ID
+    Optional<BookStatistics> findByBookId(Long bookId);
 }
