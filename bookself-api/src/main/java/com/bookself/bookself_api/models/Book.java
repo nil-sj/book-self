@@ -61,8 +61,26 @@ public class Book {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    // Getters and Setters
+    //Constructors
+    public Book() {
+    }
+    public Book(Long id, String title, String author, String description, String isbn, LocalDate publishDate, String coverImagePath, Set<Genre> genres, Set<Review> reviews, Set<ReadingProgress> readingProgresses, User addedBy, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.description = description;
+        this.isbn = isbn;
+        this.publishDate = publishDate;
+        this.coverImagePath = coverImagePath;
+        this.genres = genres;
+        this.reviews = reviews;
+        this.readingProgresses = readingProgresses;
+        this.addedBy = addedBy;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }
