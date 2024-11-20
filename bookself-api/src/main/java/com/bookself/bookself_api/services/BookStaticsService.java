@@ -34,7 +34,31 @@ public class BookStaticsService {
     }
 
     // Update a BookStatics
+    public BookStatistics updateBookStatistics(Long bookId, int timesRead, double averageRating, int totalReviews) {
+        Optional<BookStatistics> existingStats = bookStatisticsRepository.findByBookId(bookId);
 
+        if (existingStats.isPresent()) {
+            BookStatistics stats = existingStats.get();
+            stats.setTimesRead(timesRead);
+            stats.setAverageRating(averageRating);
+            stats.setTotalReviews(totalReviews);
+
+            return bookStatisticsRepository.save(stats);
+        } else {
+            throw new RuntimeException("No statistics found for book with ID: " + bookId);
+        }
+    }
+
+    // Delete BookStatics By Book ID
+    public void deleteBookStatistics(Long bookId) {
+        Optional<BookStatistics> existingStats = bookStatisticsRepository.findByBookId(bookId);
+
+        if (existingStats.isPresent()) {
+            bookStatisticsRepository.delete(existingStats.get());
+        } else {
+            throw new RuntimeException("No statistics found for book with ID: " + bookId);
+        }
+    }
 
 
 }
