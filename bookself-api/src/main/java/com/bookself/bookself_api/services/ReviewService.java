@@ -38,5 +38,21 @@ public class ReviewService {
         return reviewRepository.findAll(); // You can implement a custom query in the repository to filter by userId
     }
 
+    // Delete Review by ID
+    public void deleteReview(Long id) {
+        reviewRepository.deleteById(id);
+    }
+
+    // Update the content and rating of an existing Review
+    public Review updateReview(Long id, String content, int rating) {
+        Optional<Review> reviewOpt = reviewRepository.findById(id);
+        if (reviewOpt.isPresent()) {
+            Review review = reviewOpt.get();
+            review.setContent(content);
+            review.setRating(rating);
+            return reviewRepository.save(review);
+        }
+        return null; // Or throw an exception if review not found
+    }
 
 }
