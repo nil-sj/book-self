@@ -168,4 +168,12 @@ public class Book {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public void setReviews(Set<Review> reviews) {
+        this.reviews=reviews;
+    }
+
+    public Set<Review> getReviews() {
+        return reviews;
+    }
 }
