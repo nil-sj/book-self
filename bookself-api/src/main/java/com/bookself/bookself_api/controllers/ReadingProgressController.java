@@ -37,5 +37,10 @@ public class ReadingProgressController {
         return new ResponseEntity<>(savedProgress, HttpStatus.CREATED);
     }
 
-
+    // Delete a reading progress entry by ID
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteReadingProgress(@PathVariable Long id) {
+        readingProgressService.deleteProgress(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
