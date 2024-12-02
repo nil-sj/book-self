@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -34,4 +35,22 @@ public class ReviewController {
         return reviewOPt.map(review -> new ResponseEntity<>(review, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
+    // Get all Reviews for a specific Book
+    @GetMapping("/book/{bookId}")
+    public ResponseEntity<List<Review>> getReviewsByBookId(@PathVariable Long bookId) {
+        List<Review> reviews = reviewService.getReviewsByBookId(bookId);
+        return reviews.isEmpty() ? new ResponseEntity<>(HttpStatus.NO_CONTENT) :
+                new ResponseEntity<>(reviews, HttpStatus.OK);
+    }
+
+    // Get all Reviews for a specific User
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Review>> getReviewsByUserId(@PathVariable Long userId) {
+        List<Review> reviews = reviewService.getReviewsByUserId(userId);
+        return reviews.isEmpty() ? new ResponseEntity<>(HttpStatus.NO_CONTENT) :
+                new ResponseEntity<>(reviews, HttpStatus.OK);
+    }
+
+
 }
