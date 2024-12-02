@@ -52,5 +52,20 @@ public class ReviewController {
                 new ResponseEntity<>(reviews, HttpStatus.OK);
     }
 
+    // Delete Review by ID
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteReview(@PathVariable Long id) {
+        reviewService.deleteReview(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 
+    // Update the content and rating of an existing Review
+    @PutMapping("/{id}")
+    public ResponseEntity<Review> updateReview(@PathVariable Long id,
+                                               @RequestParam String content,
+                                               @RequestParam int rating) {
+        Review updatedReview = reviewService.updateReview(id, content, rating);
+        return updatedReview != null ? new ResponseEntity<>(updatedReview, HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 }
