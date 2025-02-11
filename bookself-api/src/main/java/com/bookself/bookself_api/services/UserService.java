@@ -1,15 +1,24 @@
 package com.bookself.bookself_api.services;
 
+import com.bookself.bookself_api.dto.BookDto;
+import com.bookself.bookself_api.dto.UserDto;
+import com.bookself.bookself_api.mappers.BookMapper;
+import com.bookself.bookself_api.models.Book;
 import com.bookself.bookself_api.models.User;
 import com.bookself.bookself_api.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
     public UserService(UserRepository userRepository) {
@@ -60,5 +69,13 @@ public class UserService {
             throw new IllegalArgumentException("User not found.");
         }
         userRepository.deleteById(userId);
+    }
+
+    public List<User> getAllUsers() {
+       return userRepository.findAll();
+    }
+
+    public boolean checkPassword (User user, String rawPassword) {
+        return passwordEncoder.matches(rawPassword, user.getPassword());
     }
 }
