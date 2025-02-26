@@ -5,6 +5,7 @@ import com.bookself.bookself_api.dto.UserDto;
 import com.bookself.bookself_api.mappers.BookMapper;
 import com.bookself.bookself_api.models.Book;
 import com.bookself.bookself_api.models.User;
+import com.bookself.bookself_api.models.UserRole;
 import com.bookself.bookself_api.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,9 @@ public class UserService {
     public User createUser(User user) {
         if (emailExists(user.getEmail())) {
             throw new IllegalArgumentException("Email is already in use.");
+        }
+        if (user.getRole() == null) {
+            user.setRole(UserRole.USER);
         }
         return userRepository.save(user);
     }

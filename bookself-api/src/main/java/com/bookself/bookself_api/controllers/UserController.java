@@ -7,6 +7,7 @@ import com.bookself.bookself_api.services.UserService;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +25,8 @@ public class UserController {
     }
 
     // Get all users
-    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("admin/users")
     public ResponseEntity<List<UserDto>> getAllUsers() {
         List<UserDto> users = userService.getAllUsers()
                               .stream()
