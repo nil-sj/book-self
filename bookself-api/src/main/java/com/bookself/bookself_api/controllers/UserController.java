@@ -6,11 +6,13 @@ import com.bookself.bookself_api.models.User;
 import com.bookself.bookself_api.services.UserService;
 import jakarta.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/users")
 public class UserController {
 
+    @Autowired
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -85,13 +88,24 @@ public class UserController {
     public ResponseEntity<?> loginUser(@RequestParam String email, @RequestParam String password, HttpSession session) {
         Optional<User> user = userService.findUserByEmail(email);
 
-        if(user.isPresent() && userService.checkPassword(user.get(), password)) {
+        if (user.isPresent() && userService.checkPassword(user.get(), password)) {
             session.setAttribute("user", UserMapper.toDto(user.get()));
-            return ResponseEntity.ok("Login Successfull");
+            return ResponseEntity.ok().body(Map.of("message", "Login Successfull"));
         }
 
-        return ResponseEntity.status(401).body("Invalid Credentials");
+        return ResponseEntity.status(401).body(Map.of("message", "Invalid Credentials"));
     }
+//    @PostMapping("/login")
+//    public ResponseEntity<?> loginUser(@RequestParam String email, @RequestParam String password, HttpSession session) {
+//        Optional<User> user = userService.findUserByEmail(email);
+//
+//        if(user.isPresent() && userService.checkPassword(user.get(), password)) {
+//            session.setAttribute("user", UserMapper.toDto(user.get()));
+//            return ResponseEntity.ok("Login Successfull");
+//        }
+//
+//        return ResponseEntity.status(401).body("Invalid Credentials");
+//    }
 
     //Logout user
     @PostMapping("/logout")

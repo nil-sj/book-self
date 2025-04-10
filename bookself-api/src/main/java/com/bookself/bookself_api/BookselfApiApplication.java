@@ -7,6 +7,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
+//@SpringBootApplication(scanBasePackages = "com.bookself.bookself_api")
 public class BookselfApiApplication {
 
 	public static void main(String[] args) {

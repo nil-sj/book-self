@@ -1,14 +1,14 @@
 package com.bookself.bookself_api.services;
 
-import com.bookself.bookself_api.dto.BookDto;
-import com.bookself.bookself_api.dto.UserDto;
-import com.bookself.bookself_api.mappers.BookMapper;
-import com.bookself.bookself_api.models.Book;
+//import com.bookself.bookself_api.dto.BookDto;
+//import com.bookself.bookself_api.dto.UserDto;
+//import com.bookself.bookself_api.mappers.BookMapper;
+//import com.bookself.bookself_api.models.Book;
 import com.bookself.bookself_api.models.User;
 import com.bookself.bookself_api.models.UserRole;
 import com.bookself.bookself_api.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+//import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +39,7 @@ public class UserService {
 
     // Check if an email exists
     public boolean emailExists(String email) {
-        return userRepository.existByEmail(email);
+        return userRepository.existsByEmail(email);
     }
 
     // Find a user by email
@@ -76,7 +76,7 @@ public class UserService {
     }
 
     public List<User> getAllUsers() {
-       return userRepository.findAll();
+        return userRepository.findAll();
     }
 
     public boolean checkPassword (User user, String rawPassword) {
